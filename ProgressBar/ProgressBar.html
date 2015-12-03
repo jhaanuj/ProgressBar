@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+ <link rel="stylesheet" type="text/css" href="CSS/ProgressBar.css" />
+<title>Insert title here</title>
+</head>
+<body>
+
+<script id="template" type='text/ractive'>
+    
+    <h1>Progress Bar Test .</h1>
+    
+    {{#each progressbars}}
+        <p>Click The Button to Adjust Progress Bar.</p>
+       
+        <div class="progress-bar">
+        {{#if value <= 100}}
+           
+            <div class="progress-bar-fill" style="width: {{value}}%" >
+                <span class="progress-label">{{value}}%</span>
+            </div>
+            
+          		   
+        {{/if}}
+
+        {{#if value>100}}
+            <div class="progress-bar-fill-red progress-bar" style="width: 100%">
+                <span class="progress-label">{{value}}%</span>
+            </div>
+        {{/if}}
+</div>
+    {{/each}}
+      
+
+<BR/>
+<BR/>
+    <select value='{{selectedProgress}}'>
+        <option selected disabled>Select something</option>
+        {{#each progressbars :index}}
+            <option value='{{index}}'>{{name}}</option>
+        {{/each}}
+    </select>
+
+    {{#each amounts}}
+        <button disabled='{{selectedProgress == null}}' on-click='adjust(this)'>{{this > 0 ? '+' : ''}}{{this}}</button>
+    {{/each}}
+
+</script>
+<script src='http://cdn.ractivejs.org/latest/ractive.min.js'></script>
+<script>
+var ractive = new Ractive({
+    el: document.body,
+    template: '#template',
+    data: {
+        progressbars: [
+            { name: 'first', value: 0 },
+            { name: 'second', value: 0 },
+            { name: 'Third', value: 0 },
+            { name: 'Fourth', value: 0 }
+
+             ],
+        amounts: [ +25, +10, -10, -25 ]
+    },
+    adjust: function ( d ) {
+        var selected = this.get( 'selectedProgress' );
+        if ( selected == null ) return;
+        
+        var keypath = 'progressbars[' + selected + '].value';
+        value = Math.max(0,this.get(keypath)+d); 
+        this.set(keypath, value)
+       
+                
+    }
+});
+</script>
+</body>
+</html>
